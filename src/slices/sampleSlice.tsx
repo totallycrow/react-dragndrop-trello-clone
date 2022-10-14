@@ -18,6 +18,7 @@ export const sampleSlice = createSlice({
       // doesn't actually mutate the state because it uses the Immer library,
       // which detects changes to a "draft state" and produces a brand new
       // immutable state based off those changes
+      console.log("clicked");
       state.value += 1;
     },
     decrement: (state) => {
