@@ -5,7 +5,7 @@ import { IBoard, IBoardsContainer } from "./types";
 const sampleBoard: IBoard = {
   name: "test-board",
   boardId: "T01",
-  tasks: ["Do Some Tests"],
+  tasksIds: ["Do Some Tests"],
 };
 
 const initialState: IBoardsContainer = {

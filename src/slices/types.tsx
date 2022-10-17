@@ -1,7 +1,7 @@
 export interface IBoard {
   name: string;
   boardId: string;
-  tasks: Array<string>;
+  tasksIds: Array<string>;
 }
 
 export interface IBoardsContainer {
