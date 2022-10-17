@@ -25,7 +25,7 @@ export const TasksContainer = (props: any) => {
       <div
         ref={setNodeRef}
         style={style}
-        className="bg-slate-400 h-40 w-40 z-0"
+        className="bg-slate-400 h-40 w-40 z-0 inline-block"
       >
         {props.items.map((item: any) => {
           console.log(item);
