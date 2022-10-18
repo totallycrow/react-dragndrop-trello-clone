@@ -83,10 +83,16 @@ export const boards = createSlice({
     // incrementByAmount: (state, action: PayloadAction<number>) => {
     //   state.value += action.payload;
     // },
+    removeBoard: (state, action) => {
+      const id = action.payload;
+      console.log(id);
+
+      delete state[id];
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { moveBetween, setBoards, addBoard } = boards.actions;
+export const { moveBetween, setBoards, addBoard, removeBoard } = boards.actions;
 
 export default boards.reducer;

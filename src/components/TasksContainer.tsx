@@ -6,8 +6,20 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { DraggableTask } from "./DraggableTask";
+import { addBoard, removeBoard } from "../slices/boards";
+import { useDispatch, useSelector } from "react-redux";
+import { createSelector } from "@reduxjs/toolkit";
+import { RootState } from "../app/store";
+
+const boardsSelector = createSelector(
+  (state: RootState) => state,
+  (state) => state.boards
+);
 
 export const TasksContainer = (props: any) => {
+  const dispatch = useDispatch();
+  const boards = useSelector(boardsSelector);
+
   console.log("TASK CONTAINER");
   console.log(props);
   const { isOver, setNodeRef } = useDroppable({
@@ -23,7 +35,14 @@ export const TasksContainer = (props: any) => {
 
   return (
     <div>
-      <h2>{props.groupName}</h2>
+      <h3 className="inline">{props.groupName}</h3>
+      <button
+        className="close inline"
+        onClick={() => dispatch(removeBoard(props.id))}
+      >
+        &times;
+      </button>
+
       <div>
         <SortableContext
           id={props.id}
