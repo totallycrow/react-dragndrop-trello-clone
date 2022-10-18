@@ -1,46 +1,35 @@
 // @ts-nocheck
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   DndContext,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  closestCenter,
   DragStartEvent,
   DragOverlay,
 } from "@dnd-kit/core";
-import {
-  sortableKeyboardCoordinates,
-  arrayMove,
-  SortableContext,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-
+import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { DraggableTask } from "./DraggableTask";
 import { TasksContainer } from "./TasksContainer";
-import { insertAtIndex, removeAtIndex } from "./utils";
-import { useDispatch, useSelector, getState } from "react-redux";
-import { RootState, store } from "../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
 import { createSelector } from "@reduxjs/toolkit";
 import { moveBetween, setBoards, addBoard } from "../slices/boards";
 
-const initialBoard = {
-  boardId: "group1",
-  name: "Test Board",
-  taskIds: [0, 1, 2],
-};
-
+// SETUP SELECTOR
 const boardsSelector = createSelector(
   (state: RootState) => state,
   (state) => state.boards
 );
 
+//**********  MAIN COMPONENT **********
 export const BoardsContainer = () => {
   const dispatch = useDispatch();
   const boards = useSelector(boardsSelector);
   const [activeId, setActiveId] = useState<string | null>(null);
 
+  // SETUP SENSORS
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -68,19 +57,6 @@ export const BoardsContainer = () => {
         item,
       })
     );
-
-    console.log("MOVE BETWEEN");
-    console.log(boards);
-
-    return {
-      ...items,
-      [activeContainer]: {
-        tasks: removeAtIndex(items[activeContainer].tasks, activeIndex),
-      },
-      [overContainer]: {
-        tasks: insertAtIndex(items[overContainer].tasks, overIndex, item),
-      },
-    };
   };
 
   const handleDragEnd = ({ active, over }) => {
@@ -100,7 +76,6 @@ export const BoardsContainer = () => {
 
       let newItems;
       if (activeContainer === overContainer) {
-        // const { activeContainer, overContainer, activeIndex };
         dispatch(
           setBoards({
             activeContainer,
@@ -122,10 +97,9 @@ export const BoardsContainer = () => {
 
       return newItems;
     }
-
     setActiveId(null);
   };
-  console.log("BOARDS CONTAINER LOADED");
+
   return (
     <div className="bg-slate-300">
       <h2>BoardsContainer</h2>
@@ -161,7 +135,6 @@ export const BoardsContainer = () => {
   );
 
   function handleDragStart(event: DragStartEvent) {
-    console.log("DRAG START", event);
     const { active } = event;
     const { id } = active;
 
@@ -169,8 +142,6 @@ export const BoardsContainer = () => {
   }
 
   function handleDragOver({ active, over }) {
-    console.log("OVER");
-    console.log(over);
     const overId = over?.id;
 
     if (!overId || over.data === undefined) {
@@ -179,13 +150,12 @@ export const BoardsContainer = () => {
 
     const activeContainer = active.data.current.sortable.containerId;
 
-    // ??
+    // ?? ********************************************************************************************************
+    // initial code
+    // const overContainer = over.data.current.sortable.containerId;
     const overContainer = over.data.current?.sortable.containerId || overId;
 
     if (!overContainer) return;
-
-    // initial code
-    // const overContainer = over.data.current.sortable.containerId;
 
     if (activeContainer !== overContainer) {
       const activeIndex = active.data.current.sortable.index;
