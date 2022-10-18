@@ -12,3 +12,7 @@ export interface ITask {
   taskId: string;
   value: string;
 }
+
+export interface IGroupItems {
+  [key: string]: { groupName: string; tasks: Array<string> };
+}
