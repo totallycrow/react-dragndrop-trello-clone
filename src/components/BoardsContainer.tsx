@@ -23,7 +23,7 @@ import { insertAtIndex, removeAtIndex } from "./utils";
 import { useDispatch, useSelector, getState } from "react-redux";
 import { RootState, store } from "../app/store";
 import { createSelector } from "@reduxjs/toolkit";
-import { moveBetween, setBoards } from "../slices/boards";
+import { moveBetween, setBoards, addBoard } from "../slices/boards";
 
 const initialBoard = {
   boardId: "group1",
@@ -39,7 +39,6 @@ const boardsSelector = createSelector(
 export const BoardsContainer = () => {
   const dispatch = useDispatch();
   const boards = useSelector(boardsSelector);
-  const [itemGroups, setItemGroups] = useState(boards);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -95,49 +94,38 @@ export const BoardsContainer = () => {
       const overContainer = over.data.current?.sortable.containerId || over.id;
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
-        over.id in itemGroups
-          ? itemGroups[overContainer].tasks.length + 1
+        over.id in boards
+          ? boards[overContainer].tasks.length + 1
           : over.data.current.sortable.index;
 
-      setItemGroups((itemGroups) => {
-        let newItems;
-        if (activeContainer === overContainer) {
-          newItems = {
-            ...itemGroups,
-            [overContainer]: {
-              tasks: arrayMove(
-                itemGroups[overContainer].tasks,
-                activeIndex,
-                overIndex
-              ),
-            },
-          };
-          // const { activeContainer, overContainer, activeIndex };
-          dispatch(
-            setBoards({
-              activeContainer,
-              overContainer,
-              activeIndex,
-              overIndex,
-            })
-          );
-        } else {
-          newItems = moveBetweenContainers(
-            itemGroups,
+      let newItems;
+      if (activeContainer === overContainer) {
+        // const { activeContainer, overContainer, activeIndex };
+        dispatch(
+          setBoards({
             activeContainer,
-            activeIndex,
             overContainer,
+            activeIndex,
             overIndex,
-            active.id
-          );
-        }
+          })
+        );
+      } else {
+        newItems = moveBetweenContainers(
+          boards,
+          activeContainer,
+          activeIndex,
+          overContainer,
+          overIndex,
+          active.id
+        );
+      }
 
-        return newItems;
-      });
+      return newItems;
     }
 
     setActiveId(null);
   };
+  console.log("BOARDS CONTAINER LOADED");
   return (
     <div className="bg-slate-300">
       <h2>BoardsContainer</h2>
@@ -150,7 +138,7 @@ export const BoardsContainer = () => {
           onDragEnd={handleDragEnd}
         >
           <div className="flex">
-            {Object.keys(boards).map((group) => (
+            {Object.keys(boards).map((group, index) => (
               <TasksContainer
                 id={group}
                 items={boards[group]}
@@ -159,7 +147,11 @@ export const BoardsContainer = () => {
                 groupName={boards[group].groupName}
               />
             ))}
+            <button className="inline" onClick={() => dispatch(addBoard())}>
+              New Board
+            </button>
           </div>
+
           <DragOverlay>
             {activeId ? <DraggableTask id={activeId} dragOverlay /> : null}
           </DragOverlay>
@@ -177,9 +169,11 @@ export const BoardsContainer = () => {
   }
 
   function handleDragOver({ active, over }) {
+    console.log("OVER");
+    console.log(over);
     const overId = over?.id;
 
-    if (!overId) {
+    if (!overId || over.data === undefined) {
       return;
     }
 
@@ -188,26 +182,26 @@ export const BoardsContainer = () => {
     // ??
     const overContainer = over.data.current?.sortable.containerId || overId;
 
+    if (!overContainer) return;
+
     // initial code
     // const overContainer = over.data.current.sortable.containerId;
 
     if (activeContainer !== overContainer) {
-      setItemGroups((itemGroups) => {
-        const activeIndex = active.data.current.sortable.index;
-        const overIndex =
-          over.id in itemGroups
-            ? itemGroups[overContainer].length + 1
-            : over.data.current.sortable.index;
+      const activeIndex = active.data.current.sortable.index;
+      const overIndex =
+        over.id in boards
+          ? boards[overContainer].length + 1
+          : over.data.current.sortable.index;
 
-        return moveBetweenContainers(
-          itemGroups,
-          activeContainer,
-          activeIndex,
-          overContainer,
-          overIndex,
-          active.id
-        );
-      });
+      return moveBetweenContainers(
+        boards,
+        activeContainer,
+        activeIndex,
+        overContainer,
+        overIndex,
+        active.id
+      );
     }
   }
 };

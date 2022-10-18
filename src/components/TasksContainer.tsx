@@ -23,7 +23,7 @@ export const TasksContainer = (props: any) => {
 
   return (
     <div>
-      <h2>test</h2>
+      <h2>{props.groupName}</h2>
       <div>
         <SortableContext
           id={props.id}

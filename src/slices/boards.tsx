@@ -10,11 +10,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-// const sampleBoard: IBoard = {
-//   name: "test-board",
-//   boardId: "T01",
-//   tasks: ["Do Some Tests"],
-// };
+const newGroup = {
+  newGroup: { groupName: "GroupNew", tasks: [] },
+};
 
 const initialState = {
   group1: { groupName: "Group1", tasks: ["1", "2", "3"] },
@@ -75,6 +73,10 @@ export const boards = createSlice({
       }
     },
 
+    addBoard: (state) => {
+      state[Date.now()] = { groupName: "GroupNew", tasks: [] };
+    },
+
     // decrement: (state) => {
     //   state.value -= 1;
     // },
@@ -85,6 +87,6 @@ export const boards = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { moveBetween, setBoards } = boards.actions;
+export const { moveBetween, setBoards, addBoard } = boards.actions;
 
 export default boards.reducer;
