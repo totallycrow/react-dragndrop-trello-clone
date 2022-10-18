@@ -8,6 +8,6 @@ export const insertAtIndex = (array: any, index: any, item: any) => {
   return [...array.slice(0, index), item, ...array.slice(index)];
 };
 
-export const arrayMove = (array: any, oldIndex: any, newIndex: any) => {
-  return dndKitArrayMove(array, oldIndex, newIndex);
-};
+// export const arrayMove = (array: any, oldIndex: any, newIndex: any) => {
+//   return dndKitArrayMove(array, oldIndex, newIndex);
+// };

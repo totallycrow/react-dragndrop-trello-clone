@@ -1,5 +1,5 @@
+// @ts-nocheck
 import React, { useState } from "react";
-
 import {
   DndContext,
   KeyboardSensor,
@@ -20,14 +20,26 @@ import {
 import { DraggableTask } from "./DraggableTask";
 import { TasksContainer } from "./TasksContainer";
 import { insertAtIndex, removeAtIndex } from "./utils";
+import { useDispatch, useSelector, getState } from "react-redux";
+import { RootState, store } from "../app/store";
+import { createSelector } from "@reduxjs/toolkit";
+import { moveBetween, setBoards } from "../slices/boards";
+
+const initialBoard = {
+  boardId: "group1",
+  name: "Test Board",
+  taskIds: [0, 1, 2],
+};
+
+const boardsSelector = createSelector(
+  (state: RootState) => state,
+  (state) => state.boards
+);
 
 export const BoardsContainer = () => {
-  const containers = [1, 2];
-  const [itemGroups, setItemGroups] = useState({
-    group1: ["1", "2", "3"],
-    group2: ["4", "5", "6"],
-    group3: ["7", "8", "9"],
-  });
+  const dispatch = useDispatch();
+  const boards = useSelector(boardsSelector);
+  const [itemGroups, setItemGroups] = useState(boards);
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(
@@ -47,10 +59,28 @@ export const BoardsContainer = () => {
     overIndex,
     item
   ) => {
+    dispatch(
+      moveBetween({
+        items,
+        activeContainer,
+        activeIndex,
+        overContainer,
+        overIndex,
+        item,
+      })
+    );
+
+    console.log("MOVE BETWEEN");
+    console.log(boards);
+
     return {
       ...items,
-      [activeContainer]: removeAtIndex(items[activeContainer], activeIndex),
-      [overContainer]: insertAtIndex(items[overContainer], overIndex, item),
+      [activeContainer]: {
+        tasks: removeAtIndex(items[activeContainer].tasks, activeIndex),
+      },
+      [overContainer]: {
+        tasks: insertAtIndex(items[overContainer].tasks, overIndex, item),
+      },
     };
   };
 
@@ -66,7 +96,7 @@ export const BoardsContainer = () => {
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
         over.id in itemGroups
-          ? itemGroups[overContainer].length + 1
+          ? itemGroups[overContainer].tasks.length + 1
           : over.data.current.sortable.index;
 
       setItemGroups((itemGroups) => {
@@ -74,12 +104,23 @@ export const BoardsContainer = () => {
         if (activeContainer === overContainer) {
           newItems = {
             ...itemGroups,
-            [overContainer]: arrayMove(
-              itemGroups[overContainer],
-              activeIndex,
-              overIndex
-            ),
+            [overContainer]: {
+              tasks: arrayMove(
+                itemGroups[overContainer].tasks,
+                activeIndex,
+                overIndex
+              ),
+            },
           };
+          // const { activeContainer, overContainer, activeIndex };
+          dispatch(
+            setBoards({
+              activeContainer,
+              overContainer,
+              activeIndex,
+              overIndex,
+            })
+          );
         } else {
           newItems = moveBetweenContainers(
             itemGroups,
@@ -109,12 +150,13 @@ export const BoardsContainer = () => {
           onDragEnd={handleDragEnd}
         >
           <div className="flex">
-            {Object.keys(itemGroups).map((group) => (
+            {Object.keys(boards).map((group) => (
               <TasksContainer
                 id={group}
-                items={itemGroups[group]}
+                items={boards[group]}
                 activeId={activeId}
                 key={group}
+                groupName={boards[group].groupName}
               />
             ))}
           </div>
@@ -168,47 +210,4 @@ export const BoardsContainer = () => {
       });
     }
   }
-  // function handleDragEnd(event: any) {
-  //   const { active, over } = event;
-
-  //   console.log("ACTIVE ID", active.id);
-  //   console.log("OVER ID", over.id);
-
-  //   if (active.id !== over.id) {
-  //     setItems((items) => {
-  //       const oldIndex = items.indexOf(active.id);
-  //       const newIndex = items.indexOf(over.id);
-
-  //       return arrayMove(items, oldIndex, newIndex);
-  //     });
-  //   }
-  // }
-
-  // import React, {useState} from 'react';
-  // import {DndContext} from '@dnd-kit/core';
-
-  // import {Droppable} from './Droppable';
-  // import {Draggable} from './Draggable';
-
-  // function App() {
-  //   const [isDropped, setIsDropped] = useState(false);
-  //   const draggableMarkup = (
-  //     <Draggable>Drag me</Draggable>
-  //   );
-
-  //   return (
-  //     <DndContext onDragEnd={handleDragEnd}>
-  //       {!isDropped ? draggableMarkup : null}
-  //       <Droppable>
-  //         {isDropped ? draggableMarkup : 'Drop here'}
-  //       </Droppable>
-  //     </DndContext>
-  //   );
-
-  //   function handleDragEnd(event) {
-  //     if (event.over && event.over.id === 'droppable') {
-  //       setIsDropped(true);
-  //     }
-  //   }
-  // }
 };

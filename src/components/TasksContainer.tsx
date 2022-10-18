@@ -8,6 +8,8 @@ import {
 import { DraggableTask } from "./DraggableTask";
 
 export const TasksContainer = (props: any) => {
+  console.log("TASK CONTAINER");
+  console.log(props);
   const { isOver, setNodeRef } = useDroppable({
     id: props.id,
   });
@@ -16,23 +18,31 @@ export const TasksContainer = (props: any) => {
     backgroundColor: isOver ? "green" : undefined,
   };
 
+  console.log("TASK CONTAINER");
+  console.log(props);
+
   return (
-    <SortableContext
-      id={props.id}
-      items={props.items}
-      strategy={verticalListSortingStrategy}
-    >
-      <div
-        ref={setNodeRef}
-        style={style}
-        className="bg-slate-400 h-40 w-40 z-0 inline-block"
-      >
-        {props.items.map((item: any) => {
-          console.log(item);
-          return <DraggableTask id={item} />;
-        })}
+    <div>
+      <h2>test</h2>
+      <div>
+        <SortableContext
+          id={props.id}
+          items={props.items.tasks}
+          strategy={verticalListSortingStrategy}
+        >
+          <div
+            ref={setNodeRef}
+            style={style}
+            className="bg-slate-400 h-40 w-40 z-0 inline-block"
+          >
+            {props.items.tasks.map((item: any) => {
+              console.log(item);
+              return <DraggableTask id={item} />;
+            })}
+          </div>
+        </SortableContext>
       </div>
-    </SortableContext>
+    </div>
   );
 };
 
