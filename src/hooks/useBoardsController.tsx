@@ -98,7 +98,6 @@ export const useBoardsController: any = () => {
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     const { id } = active;
-
     setActiveId(id as string);
   }
 

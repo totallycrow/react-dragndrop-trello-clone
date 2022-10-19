@@ -44,7 +44,15 @@ export const boards = createSlice({
     removeTaskIdFromBoard: (state, action) => {
       const id = action.payload.id;
       const groupName = action.payload.groupName;
-      state[groupName].taskIds.filter((task: any) => task !== id);
+
+      const targetTask = state[groupName].taskIds.find(
+        (task: any) => task === id
+      );
+
+      console.log(targetTask);
+      const indexToRemove = state[groupName].taskIds.indexOf(targetTask);
+      console.log(indexToRemove);
+      state[groupName].taskIds.splice(indexToRemove, 1);
     },
   },
 });

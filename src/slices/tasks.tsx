@@ -27,7 +27,12 @@ export const tasks = createSlice({
       console.log("fired");
       const { id } = action.payload;
       console.log(id);
-      state.filter((item: any) => item.id !== id);
+
+      const targetTask = state.find((task: any) => task.taskId === id);
+      //   @ts-ignore
+      const indexToRemove = state.indexOf(targetTask);
+      console.log(indexToRemove);
+      state.splice(indexToRemove, 1);
     },
   },
 });

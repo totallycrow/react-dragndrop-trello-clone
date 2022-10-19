@@ -2,10 +2,8 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setTaskValue } from "../slices/boards";
-import { setTaskValueTask } from "../slices/tasks";
-import { removeTask } from "../slices/tasks";
-import { removeTaskIdFromBoard } from "../slices/boards";
+import { removeTaskIdFromBoard, setTaskValue } from "../slices/boards";
+import { removeTask, setTaskValueTask } from "../slices/tasks";
 
 export const DraggableTask = ({ groupName, id, index, value }: any) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -20,28 +18,30 @@ export const DraggableTask = ({ groupName, id, index, value }: any) => {
   // );
 
   // groupName, index, newTaskValue
+
   return (
     <div>
+      <div className={"inline"} {...listeners} {...attributes}>
+        &#9776;
+      </div>
       <input
         ref={setNodeRef}
         style={style}
-        {...listeners}
-        {...attributes}
         className="z-50 block w-1/2 inline"
         value={value}
         onChange={(e) => {
-          console.log("*******??????? INPUT ID", id);
+          console.log("*******???????", id);
           dispatch(setTaskValueTask({ id: id, newTaskValue: e.target.value }));
         }}
       ></input>
       <button
-        className="close inline"
+        className="inline"
         onClick={() => {
-          // dispatch(removeTask({ id: id }));
-          // dispatch(removeTaskIdFromBoard({ id: id, groupName: groupName }));
+          dispatch(removeTaskIdFromBoard({ id, groupName }));
+          dispatch(removeTask({ id }));
         }}
       >
-        &times;
+        X
       </button>
     </div>
   );
