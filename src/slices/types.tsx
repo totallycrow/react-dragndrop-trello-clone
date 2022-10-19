@@ -16,3 +16,11 @@ export interface ITask {
 export interface IGroupItems {
   [key: string]: { groupName: string; taskIds: Array<string> };
 }
+
+export interface ITaskProps {
+  id: string;
+  items: Array<string>;
+  activeId: string;
+  key: string;
+  groupName: string;
+}

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { ITask } from "./types";
 
 const initialState = [
   { taskId: "1", value: "test1" },
@@ -28,10 +29,10 @@ export const tasks = createSlice({
       const { id } = action.payload;
       console.log(id);
 
-      const targetTask = state.find((task: any) => task.taskId === id);
-      //   @ts-ignore
+      const targetTask = state.find((task: ITask) => task.taskId === id);
+
+      if (!targetTask) return;
       const indexToRemove = state.indexOf(targetTask);
-      console.log(indexToRemove);
       state.splice(indexToRemove, 1);
     },
     addTask: (state, action) => {

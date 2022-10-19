@@ -56,7 +56,9 @@ export const BoardsContainer = () => {
           </div>
 
           <DragOverlay>
-            {activeId ? <DraggableTask id={activeId} dragOverlay /> : null}
+            {activeId ? (
+              <DraggableTask id={activeId} groupName="" value="" />
+            ) : null}
           </DragOverlay>
         </DndContext>
       </div>

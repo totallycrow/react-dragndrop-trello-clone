@@ -1,8 +1,8 @@
-// @ts-nocheck
 import { createSlice } from "@reduxjs/toolkit";
 import { arrayMove } from "@dnd-kit/sortable";
+import { IGroupItems } from "./types";
 
-const initialState = {
+const initialState: IGroupItems = {
   group1: { groupName: "Group1", taskIds: ["1", "2", "3"] },
   group2: { groupName: "Group2", taskIds: ["4", "5", "6"] },
   group3: { groupName: "Group3", taskIds: [] },
@@ -49,6 +49,8 @@ export const boards = createSlice({
         (task: any) => task === id
       );
 
+      if (!targetTask) return;
+
       console.log(targetTask);
       const indexToRemove = state[groupName].taskIds.indexOf(targetTask);
       console.log(indexToRemove);
@@ -69,7 +71,7 @@ export const {
   setBoards,
   addBoard,
   removeBoard,
-  setTaskValue,
+
   removeTaskIdFromBoard,
   addTaskIdToBoard,
 } = boards.actions;

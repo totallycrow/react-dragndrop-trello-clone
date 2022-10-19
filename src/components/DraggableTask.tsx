@@ -1,23 +1,25 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../app/store";
-import { removeTaskIdFromBoard, setTaskValue } from "../slices/boards";
+import { useDispatch } from "react-redux";
+import { removeTaskIdFromBoard } from "../slices/boards";
 import { removeTask, setTaskValueTask } from "../slices/tasks";
 
-export const DraggableTask = ({ groupName, id, index, value }: any) => {
+interface ITaskProps {
+  groupName: string;
+  id: string;
+  value: string | undefined;
+}
+
+export const DraggableTask = ({ groupName, id, value }: ITaskProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: id,
     });
   const style = { transform: CSS.Transform.toString(transform), transition };
   const dispatch = useDispatch();
-  // @ts-ignore
-  // const tasks = useSelector(
-  //   (state: RootState) => state.boards[groupName].tasks
-  // );
 
-  // groupName, index, newTaskValue
+  // value === undefined while dragging? // potentially set it to initial value
+  const taskValue = value || "";
 
   return (
     <div>
@@ -28,7 +30,7 @@ export const DraggableTask = ({ groupName, id, index, value }: any) => {
         ref={setNodeRef}
         style={style}
         className="z-50 block w-1/2 inline"
-        value={value}
+        value={taskValue}
         onChange={(e) => {
           console.log("*******???????", id);
           dispatch(setTaskValueTask({ id: id, newTaskValue: e.target.value }));
