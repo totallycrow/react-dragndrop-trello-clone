@@ -34,8 +34,18 @@ export const tasks = createSlice({
       console.log(indexToRemove);
       state.splice(indexToRemove, 1);
     },
+    addTask: (state, action) => {
+      console.log("fired");
+      const id = action.payload.id;
+
+      const newTask = {
+        taskId: id,
+        value: "New Task",
+      };
+      state.push(newTask);
+    },
   },
 });
 
-export const { setTaskValueTask, removeTask } = tasks.actions;
+export const { setTaskValueTask, removeTask, addTask } = tasks.actions;
 export default tasks.reducer;

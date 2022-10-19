@@ -5,9 +5,10 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { DraggableTask } from "./DraggableTask";
-import { removeBoard } from "../slices/boards";
+import { removeBoard, addTaskIdToBoard } from "../slices/boards";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import { addTask } from "../slices/tasks";
 
 export const TasksContainer = (props: any) => {
   const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export const TasksContainer = (props: any) => {
   const style = {
     backgroundColor: isOver ? "green" : undefined,
   };
+  const groupId = props.id;
 
   return (
     <div>
@@ -48,14 +50,28 @@ export const TasksContainer = (props: any) => {
             {props.items.map((item: any, index: any) => {
               console.log(item);
               return (
-                <DraggableTask
-                  id={item}
-                  value={tasks.find((task: any) => task.taskId === item)?.value}
-                  index={index}
-                  groupName={props.id}
-                />
+                <div>
+                  {" "}
+                  <DraggableTask
+                    id={item}
+                    value={
+                      tasks.find((task: any) => task.taskId === item)?.value
+                    }
+                    index={index}
+                    groupName={props.id}
+                  />
+                </div>
               );
             })}
+            <button
+              onClick={() => {
+                const id = Date.now();
+                dispatch(addTask({ id }));
+                dispatch(addTaskIdToBoard({ id, groupId }));
+              }}
+            >
+              Add New Task
+            </button>
           </div>
         </SortableContext>
       </div>

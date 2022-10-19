@@ -54,6 +54,13 @@ export const boards = createSlice({
       console.log(indexToRemove);
       state[groupName].taskIds.splice(indexToRemove, 1);
     },
+    addTaskIdToBoard: (state, action) => {
+      const id = action.payload.id;
+      const groupId = action.payload.groupId;
+      console.log("add id to board");
+
+      state[groupId].taskIds.push(id);
+    },
   },
 });
 
@@ -64,5 +71,6 @@ export const {
   removeBoard,
   setTaskValue,
   removeTaskIdFromBoard,
+  addTaskIdToBoard,
 } = boards.actions;
 export default boards.reducer;
