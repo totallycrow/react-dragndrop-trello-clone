@@ -3,9 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { arrayMove } from "@dnd-kit/sortable";
 
 const initialState = {
-  group1: { groupName: "Group1", tasks: ["1", "2", "3"] },
-  group2: { groupName: "Group2", tasks: ["4", "5", "6"] },
-  group3: { groupName: "Group3", tasks: [] },
+  group1: { groupName: "Group1", taskIds: ["1", "2", "3"] },
+  group2: { groupName: "Group2", taskIds: ["4", "5", "6"] },
+  group3: { groupName: "Group3", taskIds: [] },
 };
 
 export const boards = createSlice({
@@ -16,8 +16,8 @@ export const boards = createSlice({
       const { activeContainer, activeIndex, overContainer, overIndex, item } =
         action.payload;
 
-      state[overContainer].tasks.splice(overIndex, 0, item);
-      state[activeContainer].tasks.splice(activeIndex, 1);
+      state[overContainer].taskIds.splice(overIndex, 0, item);
+      state[activeContainer].taskIds.splice(activeIndex, 1);
     },
 
     setBoards: (state, action) => {
@@ -25,8 +25,8 @@ export const boards = createSlice({
         action.payload;
 
       if (activeContainer === overContainer) {
-        state[overContainer].tasks = arrayMove(
-          state[overContainer].tasks,
+        state[overContainer].taskIds = arrayMove(
+          state[overContainer].taskIds,
           activeIndex,
           overIndex
         );
@@ -34,15 +34,27 @@ export const boards = createSlice({
     },
 
     addBoard: (state) => {
-      state[Date.now()] = { groupName: "GroupNew", tasks: [] };
+      state[Date.now()] = { groupName: "GroupNew", taskIds: [] };
     },
 
     removeBoard: (state, action) => {
       const id = action.payload;
       delete state[id];
     },
+    removeTaskIdFromBoard: (state, action) => {
+      const id = action.payload.id;
+      const groupName = action.payload.groupName;
+      state[groupName].taskIds.filter((task: any) => task !== id);
+    },
   },
 });
 
-export const { moveBetween, setBoards, addBoard, removeBoard } = boards.actions;
+export const {
+  moveBetween,
+  setBoards,
+  addBoard,
+  removeBoard,
+  setTaskValue,
+  removeTaskIdFromBoard,
+} = boards.actions;
 export default boards.reducer;

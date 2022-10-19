@@ -6,10 +6,15 @@ import {
 } from "@dnd-kit/sortable";
 import { DraggableTask } from "./DraggableTask";
 import { removeBoard } from "../slices/boards";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 export const TasksContainer = (props: any) => {
   const dispatch = useDispatch();
+
+  // @ts-ignore
+  const tasks = useSelector((state: RootState) => state.tasks);
+  console.log(tasks);
 
   const { isOver, setNodeRef } = useDroppable({
     id: props.id,
@@ -32,7 +37,7 @@ export const TasksContainer = (props: any) => {
       <div>
         <SortableContext
           id={props.id}
-          items={props.items.tasks}
+          items={props.items}
           strategy={verticalListSortingStrategy}
         >
           <div
@@ -40,8 +45,16 @@ export const TasksContainer = (props: any) => {
             style={style}
             className="bg-slate-400 h-40 w-40 z-0 inline-block"
           >
-            {props.items.tasks.map((item: any) => {
-              return <DraggableTask id={item} />;
+            {props.items.map((item: any, index: any) => {
+              console.log(item);
+              return (
+                <DraggableTask
+                  id={item}
+                  value={tasks.find((task: any) => task.taskId === item)?.value}
+                  index={index}
+                  groupName={props.id}
+                />
+              );
             })}
           </div>
         </SortableContext>

@@ -44,7 +44,7 @@ export const BoardsContainer = () => {
             {Object.keys(boards).map((group) => (
               <TasksContainer
                 id={group}
-                items={boards[group]}
+                items={boards[group].taskIds}
                 activeId={activeId}
                 key={group}
                 groupName={boards[group].groupName}

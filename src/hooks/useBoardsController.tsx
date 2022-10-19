@@ -66,7 +66,7 @@ export const useBoardsController: any = () => {
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
         over.id in boards
-          ? boards[overContainer].tasks.length + 1
+          ? boards[overContainer].taskIds.length + 1
           : over.data.current.sortable.index;
 
       let newItems;
@@ -122,7 +122,7 @@ export const useBoardsController: any = () => {
       const activeIndex = active.data.current.sortable.index;
       const overIndex =
         over.id in boards
-          ? boards[overContainer].tasks.length + 1
+          ? boards[overContainer].taskIds.length + 1
           : over.data.current.sortable.index;
 
       return moveBetweenContainers(
